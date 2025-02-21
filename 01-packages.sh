@@ -9,6 +9,9 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
+echo "Please Enter DB Password"
+read -s mysql_root_password
+
 VALIDATE(){
     if [ $1 -ne 0 ]
 then 
@@ -48,7 +51,7 @@ then
 
     #Below code will be useful for idempotent nature
 
-    mysql -h db.sukeshdaws.shop -uroot -pExpenseApp@1 -e 'show databases;' &>>$LOGFILE
+    mysql -h db.sukeshdaws.shop -uroot -p${mysql_root_password} -e 'show databases;' &>>$LOGFILE
     
     #wen e run the script for first time the passwd is not set up soo it is not equal to zero
     #wen we run for the  second time the password is equal to zero then it will run below command
@@ -56,7 +59,7 @@ then
     if [ $? -ne 0 ]
 
     then
-        mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
+        mysql_secure_installation --set-root-pass ${mysql_root_password} &>>$LOGFILE
         VALIDATE $?  "MYSQL Root password setup"
     else
         echo -e "MYSQL root password is already setup...$Y SKIPPING $N" 
