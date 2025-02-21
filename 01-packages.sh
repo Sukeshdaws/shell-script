@@ -43,5 +43,21 @@ then
      VALIDATE $? "Starting MYSQL Server"
 
 
-    mysql_secure_installation --set-root-pass ExpenseApp@1 &>>LOGFILE
-    VALIDATE $? "Setting up root password"
+    # mysql_secure_installation --set-root-pass ExpenseApp@1 &>>LOGFILE
+    # VALIDATE $? "Setting up root password"
+
+    #Below code will be useful for idempotent nature
+
+    mysql -h db.sukeshdaws.shop -uroot -pExpenseApp@1 -e 'show databases;' &>>$LOGFILE
+    
+    #wen e run the script for first time the passwd is not set up soo it is not equal to zero
+    #wen we run for the  second time the password is equal to zero then it will run below command
+
+    if [ $? -ne 0 ]
+
+    then
+        mysql_secure_installation --set-root-pass ExpenseApp@1 &>>$LOGFILE
+        VALIDATE $?  "MYSQL Root password setup"
+    else
+        echo -e "MYSQL root password is already setup...$Y SKIPPING $N" 
+    fi    
