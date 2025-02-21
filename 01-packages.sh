@@ -10,25 +10,26 @@ Y="\e[33m"
 N="\e[0m"
 
 VALIDATE(){
-if ( $1 -ne 0)
-then
-     echo -e " $2 is....$R FAILURE $N"
-     exit 1
+    if [ $1 -ne 0 ]
+then 
+echo -e "$2 is.... $R FAILURE $N"
+exit 1
+else 
+echo -e "$2 is... $G SUCCESS $N"
 
-else
-    echo -e "$2 is...$G SUCCESS $N"
-
-fi     
+fi
 
 }
 
-if [ $USERID -ne 0]
-then
-    echo "run this script with root access"
-    exit 1
 
- else
-    echo  "you are a super user"
+if [ $USERID -ne 0 ]
+
+then 
+     echo "please run this script with root access."
+     exit 1 #manually exit the program
+
+     else
+         echo "you are  a super user"
 
     fi
 
