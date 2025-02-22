@@ -42,11 +42,11 @@ dnf install nodejs -y &>>$LOGFILE
 VALIDATE $? "Intsall nodejs"
 
 
-id expense
+id expense &>>$LOGFILE
 
 if [ $? -ne 0 ]
 then
-    useradd expense
+    useradd expense &>>$LOGFILE
     VALIDATE $? "Creating Expense User"
 else
     echo -e "expense user is alread created... $Y SKIPPING $N"
