@@ -7,6 +7,9 @@ G="\e[32m"
 Y="\e[33m"
 N="\e[0m"
 
+echo "Please Enter DB Password"
+read -s mysql_root_password
+
 
 VALIDATE(){
     if [ $1 -ne 0 ]
@@ -53,5 +56,34 @@ else
 
 fi    
 
+mkdir -p /app  #-p if we create directory with same name then it will throw error if we keep -p then it doesnt throw any error
+VALIDATE $? "Creating app directory"
+
+curl -o /tmp/backend.zip https://expense-builds.s3.us-east-1.amazonaws.com/expense-backend-v2.zip &>>$LOGFILE
+VALIDATE $? "Dowmloading the backend code"
 
 
+cd /app
+unzip /tmp/backend.zip &>>$LOGFILE
+VALIDATE $? "Extracted backend code"
+
+
+npm install &>>$LOGFILE
+VALIDATE $? "Installing nodejs dependencies"
+
+cp /home/ec2-user/shell-script/backend.service etc/systemd/system/backend.service  &>>$LOGFILE
+VALIDATE $? "Copied backend service" 
+
+systemctl daemon-reload &>>$LOGFILE
+systemctl start backend &>>$LOGFILE
+systemctl enable backend &>>$LOGFILE
+VALIDATE $? "Staring and enabling backend"
+
+dnf install mysql -y &>>$LOGFILE
+VALIDATE $? "Installing mysql client"
+
+mysql -h db.sukeshdaws.shop -uroot -p${mysql_root_password} < /app/schema/backend.sql  &>>$LOGFILE
+VALIDATE $? "Schema loding"
+
+systemctl restart backend  &>>$LOGFILE
+VALIDATE $? "Restarting backend"
