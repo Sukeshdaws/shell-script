@@ -67,7 +67,7 @@ cd /app
 unzip /tmp/backend.zip &>>$LOGFILE
 VALIDATE $? "Extracted backend code"
 
-
+cd /app
 npm install &>>$LOGFILE
 VALIDATE $? "Installing nodejs dependencies"
 
